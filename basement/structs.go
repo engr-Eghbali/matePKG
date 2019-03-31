@@ -33,6 +33,7 @@ type User struct {
 	Email      string          `json:email`
 	Vc         string          `json:vc`
 	Status     int8            `json:status`
+	Avatar     string          `json:avatar`
 	FriendList []bson.ObjectId `json:friendlist`
 	Meetings   []Meet          `json:meetings`
 	Requests   []Request       `json:request`
