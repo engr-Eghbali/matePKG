@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	structs "./basement"
+	structs "/basement/"
 
 	"gopkg.in/mgo.v2"
 )
