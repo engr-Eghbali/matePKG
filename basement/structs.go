@@ -6,6 +6,12 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+type VcTable struct {
+	ID     bson.ObjectId `json:"id" bson:"_id,omitempty"`
+	UserID string        `json:userid`
+	VC     string        `json:vc`
+}
+
 type Location struct {
 	X   string `json:x`
 	Y   string `json:y`
