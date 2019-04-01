@@ -44,3 +44,13 @@ type User struct {
 	Meetings   []Meet          `json:meetings`
 	Requests   []Request       `json:request`
 }
+
+type MailOrigin struct {
+	From     string
+	Password string
+}
+
+type SmsOrigin struct {
+	From   string
+	ApiKey string
+}

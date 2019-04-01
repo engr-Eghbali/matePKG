@@ -3,19 +3,16 @@ package services
 import (
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/smtp"
+	"strconv"
+	"time"
+
+	structs "./basement"
+
+	"gopkg.in/mgo.v2"
 )
-
-type MailOrigin struct {
-	From     string
-	Password string
-}
-
-type SmsOrigin struct {
-	From   string
-	ApiKey string
-}
 
 ////////////send mail
 func SendMail(body string, recipient string, origin MailOrigin) (er bool) {
@@ -57,5 +54,30 @@ func SendSms(txt string, recipient string, origin SmsOrigin) bool {
 		log.Println("SMS Sent to: " + recipient)
 		return true
 	}
+
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+func CreateVcRecord(UID string, session *mgo.Session) string,bool {
+
+	//generate
+	rand.Seed(time.Now().UnixNano())
+	vc := strconv.Itoa(100000 + rand.Intn(999999-100000))
+
+	VcRecord := structs.VcTable{ID:bson.NewObjectId(),UserID:UID,VC:vc}
+	collection := session.DB("bkbfbtpiza46rc3").C("loginRequests")
+	InsertErr:=collection.Insert(&VcRecord)
+
+	if InsertErr!=nil{
+		log.Println("Creating vc record failed:")
+		log.Println(InsertErr)
+		log.Println("<=End")
+		return "",false
+	}else{
+		return vc,true
+	}
+
 
 }
