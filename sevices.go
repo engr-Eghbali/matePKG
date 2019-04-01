@@ -16,7 +16,7 @@ import (
 )
 
 ////////////send mail
-func SendMail(body string, recipient string, origin MailOrigin) (er bool) {
+func SendMail(body string, recipient string, origin structs.MailOrigin) (er bool) {
 
 	msg := "From: " + origin.From + "\n" +
 		"To: " + recipient + "\n" +
@@ -39,7 +39,7 @@ func SendMail(body string, recipient string, origin MailOrigin) (er bool) {
 ////////////////////////////////////////////////////////
 
 ////////////sned sms
-func SendSms(txt string, recipient string, origin SmsOrigin) bool {
+func SendSms(txt string, recipient string, origin structs.SmsOrigin) bool {
 
 	resp, err := http.Get("https://login.parsgreen.com/UrlService/sendSMS.ashx?from=" + origin.From + "&to=" + recipient + "&&text=" + txt + "&signature=" + origin.ApiKey)
 	defer resp.Body.Close()
@@ -61,7 +61,7 @@ func SendSms(txt string, recipient string, origin SmsOrigin) bool {
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-func CreateVcRecord(UID string, session *mgo.Session) (vc string, stat bool) {
+func CreateVcRecord(UID string, session *mgo.Session) (vcode string, stat bool) {
 
 	//generate
 	rand.Seed(time.Now().UnixNano())
