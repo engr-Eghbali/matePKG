@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/smtp"
 	"strconv"
+	"strings"
 	"time"
 
 	structs "github.com/engr-Eghbali/matePKG/basement"
@@ -61,6 +62,7 @@ func SendSms(txt string, recipient string, origin structs.SmsOrigin) bool {
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
+//////////// generate VC and save in vc table
 func CreateVcRecord(UID string, session *mgo.Session) (vcode string, stat bool) {
 
 	//generate
@@ -78,6 +80,36 @@ func CreateVcRecord(UID string, session *mgo.Session) (vcode string, stat bool) 
 		return "", false
 	} else {
 		return vc, true
+	}
+
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+
+////////initial user record
+func InitUser(id string, vc string, session *mgo.Session) (objid bson.ObjectId, result bool) {
+
+	var InsertErr error
+	collection := session.DB("bkbfbtpiza46rc3").C("users")
+
+	if strings.Contains(id, "@") {
+		NewUser := structs.User{ID: bson.NewObjectId(), Name: "", Phone: "", Email: id, Vc: vc, Status: 1, Avatar: "pic url here", FriendList: nil, Meetings: nil, Requests: nil}
+		objid = NewUser.ID
+		InsertErr = collection.Insert(&NewUser)
+	} else {
+		NewUser := structs.User{ID: bson.NewObjectId(), Name: "", Phone: id, Email: "", Vc: vc, Status: 1, Avatar: "pic url here", FriendList: nil, Meetings: nil, Requests: nil}
+		objid = NewUser.ID
+		InsertErr = collection.Insert(&NewUser)
+	}
+
+	if InsertErr != nil {
+		log.Println("Init User failed")
+		log.Println(InsertErr)
+		log.Println("<=End")
+		return nil, false
+	} else {
+		return objid, true
 	}
 
 }
