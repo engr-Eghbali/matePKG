@@ -107,7 +107,7 @@ func InitUser(id string, vc string, session *mgo.Session) (objid bson.ObjectId, 
 		log.Println("Init User failed")
 		log.Println(InsertErr)
 		log.Println("<=End")
-		return nil, false
+		return objid, false
 	} else {
 		return objid, true
 	}
