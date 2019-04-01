@@ -12,6 +12,7 @@ import (
 	structs "github.com/engr-Eghbali/matePKG/basement"
 
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 ////////////send mail
@@ -60,24 +61,23 @@ func SendSms(txt string, recipient string, origin SmsOrigin) bool {
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-func CreateVcRecord(UID string, session *mgo.Session) string,bool {
+func CreateVcRecord(UID string, session *mgo.Session) (vc string, stat bool) {
 
 	//generate
 	rand.Seed(time.Now().UnixNano())
 	vc := strconv.Itoa(100000 + rand.Intn(999999-100000))
 
-	VcRecord := structs.VcTable{ID:bson.NewObjectId(),UserID:UID,VC:vc}
+	VcRecord := structs.VcTable{ID: bson.NewObjectId(), UserID: UID, VC: vc}
 	collection := session.DB("bkbfbtpiza46rc3").C("loginRequests")
-	InsertErr:=collection.Insert(&VcRecord)
+	InsertErr := collection.Insert(&VcRecord)
 
-	if InsertErr!=nil{
+	if InsertErr != nil {
 		log.Println("Creating vc record failed:")
 		log.Println(InsertErr)
 		log.Println("<=End")
-		return "",false
-	}else{
-		return vc,true
+		return "", false
+	} else {
+		return vc, true
 	}
-
 
 }
