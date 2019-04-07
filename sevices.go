@@ -1,6 +1,7 @@
 package services
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -11,6 +12,7 @@ import (
 	"time"
 
 	structs "github.com/engr-Eghbali/matePKG/basement"
+	"github.com/go-redis/redis"
 
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -138,6 +140,47 @@ func LoginUser(userId string, vc string, session *mgo.Session) (res bool) {
 		return false
 	} else {
 		return true
+	}
+
+}
+
+//////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
+////////////////// fetch user info from cache
+func CacheRetrieve(client *redis.Client, keys ...string) []structs.UserCache {
+
+	var temp structs.UserCache
+	var Results []UserCache
+	Users, err := client.MGet(keys...).Result()
+
+	if err != nil {
+		log.Println("cache retrieve service failur:")
+		log.Println(err)
+		log.Println("<=End")
+		return Results
+	}
+
+	for _, user := range Users {
+		json.Unmarshal([]byte(user.(string)), &temp)
+		Results = append(Results, temp)
+	}
+	return Results
+
+}
+
+/////////////push user info to the cache
+func SendToCache(key string, data structs.UserCache, client *redis.Client) (err bool) {
+
+	info, _ := json.Marshal(data)
+	expiration, _ := time.Parse("01/01/2025", "01/01/2025")
+	duration := time.Until(expiration)
+	stat := client.Set(key, info, duration)
+	if stat.Err() == nil {
+		return true
+	} else {
+		log.Println(stat)
+		return false
 	}
 
 }
