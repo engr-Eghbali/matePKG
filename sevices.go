@@ -148,24 +148,24 @@ func LoginUser(userId string, vc string, session *mgo.Session) (res bool) {
 /////////////////////////////////////////////////////
 
 ////////////////// fetch user info from cache
-func CacheRetrieve(client *redis.Client, keys ...string) []structs.UserCache {
+func CacheRetrieve(client *redis.Client, keys ...string) ([]structs.UserCache, error) {
 
 	var temp structs.UserCache
-	var Results []UserCache
+	var Results []structs.UserCache
 	Users, err := client.MGet(keys...).Result()
 
 	if err != nil {
 		log.Println("cache retrieve service failur:")
 		log.Println(err)
 		log.Println("<=End")
-		return Results
+		return Results, err
 	}
 
 	for _, user := range Users {
 		json.Unmarshal([]byte(user.(string)), &temp)
 		Results = append(Results, temp)
 	}
-	return Results
+	return Results, err
 
 }
 
