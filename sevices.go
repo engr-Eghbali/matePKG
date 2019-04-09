@@ -121,7 +121,6 @@ func InitUser(id string, vc string, session *mgo.Session) (objid bson.ObjectId, 
 func LoginUser(userId string, vc string, session *mgo.Session) (res bool) {
 
 	collection := session.DB("bkbfbtpiza46rc3").C("users")
-	var tempUser structs.User
 	var UpdateErr error
 
 	if strings.Contains(userId, "@") {
