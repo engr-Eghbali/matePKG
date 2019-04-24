@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	structs "./basement"
+	structs "github.com/engr-Eghbali/matePKG/basement"
 	"github.com/go-redis/redis"
 
 	"gopkg.in/mgo.v2"
