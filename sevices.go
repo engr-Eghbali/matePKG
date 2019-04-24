@@ -173,8 +173,10 @@ func CacheRetrieve(client *redis.Client, keys ...string) ([]structs.UserCache, e
 	}
 
 	for _, user := range Users {
-		json.Unmarshal([]byte(user.(string)), &temp)
-		Results = append(Results, temp)
+		if user != nil {
+			json.Unmarshal([]byte(user.(string)), &temp)
+			Results = append(Results, temp)
+		}
 	}
 	return Results, err
 
